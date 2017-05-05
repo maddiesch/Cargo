@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "A74FC23ECA63E6DFC330177DB4946D2B08BE08EA",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "A74FC23ECA63E6DFC330177DB4946D2B08BE08EA" : 9223372036854775807,
+    "F3DE9870ED7CA79676F09E6069EACD2E460B0AA3" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "2B79E462-97F1-4413-9244-DE7CBC783FD5",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "A74FC23ECA63E6DFC330177DB4946D2B08BE08EA" : "Cargo\/",
+    "F3DE9870ED7CA79676F09E6069EACD2E460B0AA3" : ".."
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Cargo",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Cargo.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:skylarsch\/Cargo.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A74FC23ECA63E6DFC330177DB4946D2B08BE08EA"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:ministrycentered\/music-stand-ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "F3DE9870ED7CA79676F09E6069EACD2E460B0AA3"
+    }
+  ]
+}
