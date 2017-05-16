@@ -38,7 +38,7 @@ internal class BaseOperation : Operation {
 
     let observers = ObserverManager<OperationObserver>()
 
-    weak var container: Container? = nil
+    var container: Container? = nil
 
     // MARK: - State Management
     public final override var isReady: Bool {

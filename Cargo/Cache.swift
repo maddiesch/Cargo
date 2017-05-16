@@ -111,7 +111,6 @@ public final class Cache : NSObject, FileManagerDelegate {
                 return self.fileManager.fileExists(atPath: location.path)
             }
         } catch {
-            print("location fetch error: \(error)")
             return false
         }
     }
