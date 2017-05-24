@@ -96,6 +96,7 @@ internal class BaseOperation : Operation {
         self.observers.allObservers().forEach {
             $0.operation(self, didCompleteWithError: error)
         }
+        self.container?.addError(error)
         self.operation(completedWithError: error)
     }
 
