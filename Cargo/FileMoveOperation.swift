@@ -30,9 +30,9 @@ internal final class FileMoveOperation: BaseOperation, OperationObserver {
             }
             try locations.forEach { url, name in
                 try mover.moveFile(atLocation: url, toTargetLocation: self.location, fileName: name)
-                try? FileManager.default.removeItem(at: url)
+                assert(!FileManager.default.fileExists(atPath: url.path), "The original file must not exist after \(type(of: mover))")
+                Log("File Moved - \(name)")
             }
-            Log("File Moved \(location.lastPathComponent)")
             self.finish()
         } catch {
             self.finish(error)
