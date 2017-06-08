@@ -19,11 +19,13 @@ public final class Cache : NSObject, FileManagerDelegate {
         return fm
     }()
 
+    internal static let baseDirectory = "com.skylarsch.cargo-cache"
+
     private var location: URL = {
         guard let support = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first else {
             fatalError("Can't find application support directory")
         }
-        return URL(fileURLWithPath: "\(support)/com.skylarsch.cargo-cache/")
+        return URL(fileURLWithPath: "\(support)/\(Cache.baseDirectory)/")
     }()
 
     private let mutex = Mutex()
@@ -35,7 +37,7 @@ public final class Cache : NSObject, FileManagerDelegate {
             if self.isPrepared {
                 return
             }
-            try self.queue.sync {
+            try self.queue.sync(flags: .barrier) {
                 try self.fileManager.createDirectory(at: self.location, withIntermediateDirectories: true, attributes: nil)
                 var values = URLResourceValues()
                 values.isExcludedFromBackup = true
@@ -82,18 +84,20 @@ public final class Cache : NSObject, FileManagerDelegate {
         let key = try CacheKey(rawKey: key)
         let fn = try CacheKey.normailize(name)
         var location: URL? = nil
+        var meta: [String: Any] = [:]
 
         try self.metadata.perform { ctx in
             let file = try CachedFile.find(inContext: ctx, forKey: key.key, fileKey: fn)
             if let path = file.value(forKey: "location") as? String {
-                location = URL(fileURLWithPath: path)
+                location = self.location.appendingPathComponent(path)
+                meta["path"] = path
+                meta["objectID"] = file.objectID
             }
         }
-
         if let result = location {
             return result
         }
-        throw CacheError(.fileNotFound, "File not found", "Failed to find file location")
+        throw CacheError(.fileNotFound, "File not found", "Failed to find file location", nil, meta)
     }
 
     /// Check if a file exists in the cache.
@@ -161,6 +165,13 @@ public final class Cache : NSObject, FileManagerDelegate {
     }
 
     // MARK: - Internal management
+    internal func remove(fileWithPath path: String) {
+        self.queue.async {
+            let location = self.location.appendingPathComponent(path)
+            try? self.fileManager.removeItem(at: location)
+        }
+    }
+
     internal func move(fileAtLocation location: URL, intoCacheForKey key: String, withName name: String) throws {
         try self.queue.sync {
             try self.move(location, key, name)

@@ -8,6 +8,8 @@
 
 import Foundation
 
+let kCacheErrorMetadata = "CARCacheErrorMetadata"
+
 struct CacheError : CustomNSError {
     enum Code : Int {
         case generic
@@ -21,12 +23,14 @@ struct CacheError : CustomNSError {
     let code: Code
     let reason: String?
     let error: Error?
+    let metadata: [String: Any]?
 
-    init(_ code: Code, _ message: String, _ reason: String? = nil, _ error: Error? = nil) {
+    init(_ code: Code, _ message: String, _ reason: String? = nil, _ error: Error? = nil, _ metadata: [String: Any]? = nil) {
         self.code = code
         self.message = message
         self.reason = reason
         self.error = error
+        self.metadata = metadata
     }
 
     // MARK: - Custom Error
@@ -49,6 +53,10 @@ struct CacheError : CustomNSError {
 
         if let reason = self.reason {
             userInfo[NSLocalizedFailureReasonErrorKey] = reason
+        }
+
+        if let meta = self.metadata {
+            userInfo[kCacheErrorMetadata] = meta
         }
 
         return userInfo

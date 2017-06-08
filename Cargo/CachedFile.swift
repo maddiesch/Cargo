@@ -44,15 +44,31 @@ internal class CachedFile : NSManagedObject {
         guard let fingerprint = String(digest: digest) else {
             throw CacheError(.fingerprintFailed, "Failed to create file fingerprint")
         }
+
+        let path = self.createStoreLocation(location)
+
         file.setValue(key, forKey: "cacheKey")
         file.setValue(fileKey, forKey: "fileKey")
         file.setValue(fileName, forKey: "name")
         file.setValue(info[.size], forKey: "fileSize")
         file.setValue(fingerprint, forKey: "fingerprint")
         file.setValue(location.lastPathComponent, forKey: "cacheName")
-        file.setValue(location.path, forKey: "location")
+        file.setValue(path, forKey: "location")
 
         return file
+    }
+
+    private static func createStoreLocation(_ location: URL) -> String {
+        let components = location.pathComponents.reversed()
+        var parts: [String] = []
+        for part in components {
+            if part != Cache.baseDirectory {
+                parts.append(part)
+            } else {
+                break
+            }
+        }
+        return parts.reversed().joined(separator: "/")
     }
 
     override func awakeFromInsert() {
@@ -66,7 +82,7 @@ internal class CachedFile : NSManagedObject {
     override func didSave() {
         if self.isDeleted {
             if let path = self.value(forKey: "location") as? String {
-                try? FileManager.default.removeItem(atPath: path)
+                Cache.shared.remove(fileWithPath: path)
             }
         }
         super.didSave()
@@ -79,7 +95,7 @@ internal class CachedFile : NSManagedObject {
         fetch.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
         let results = try context.fetch(fetch)
         guard let file = results.first else {
-            throw CacheError(.fileNotFound, "File not found", "Failed to fetch file metadata")
+            throw CacheError(.fileNotFound, "File not found", "Failed to fetch file metadata", nil, ["key": key, "fKey": fileKey])
         }
         return file
     }
