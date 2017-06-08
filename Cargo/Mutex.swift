@@ -93,7 +93,7 @@ public final class Mutex {
     ///
     /// - Parameter block: The block to perform
     @discardableResult
-    public final func synchronized<T>(_ block: (Void) throws -> (T)) rethrows -> T {
+    public final func synchronized<T>(_ block: () throws -> (T)) rethrows -> T {
         self.lock()
         defer { self.unlock() }
         return try block()
