@@ -18,8 +18,16 @@ internal final class CacheMetadata {
 
     private let location: URL
 
+    private var observer: NSObjectProtocol? = nil
+
     init(_ location: URL) {
         self.location = location.appendingPathComponent("metadata.sqlite")
+    }
+
+    deinit {
+        if let observer = self.observer {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
 
     private let defaultOptions: [AnyHashable: Any] = [
@@ -31,16 +39,16 @@ internal final class CacheMetadata {
         guard let context = self.ctx else {
             return
         }
-        var err: Error? = nil
+        var blockError: Error? = nil
         context.performAndWait {
             do {
                 try block(context)
             } catch {
-                err = error
+                blockError = error
             }
         }
-        if let e = err {
-            throw e
+        if let error = blockError {
+            throw error
         }
     }
 
@@ -75,8 +83,29 @@ internal final class CacheMetadata {
             _ = try psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: self.location, options: self.defaultOptions)
 
             self.createContext(psc)
+
+            if let observer = self.observer {
+                NotificationCenter.default.removeObserver(observer)
+            }
+
+            self.observer = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextDidSave, object: nil, queue: nil, using: { [weak self] (notif) in
+                self?.mergeChangesFromSaveNotification(notif)
+            })
+
             self.isReady = true
         }
+    }
+
+    internal func createViewerContext() -> NSManagedObjectContext {
+        guard let psc = self.ctx?.persistentStoreCoordinator else {
+            fatalError()
+        }
+        let ctx = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        ctx.persistentStoreCoordinator = psc
+        ctx.mergePolicy = NSOverwriteMergePolicy
+        ctx.retainsRegisteredObjects = false
+        ctx.shouldDeleteInaccessibleFaults = true
+        return ctx
     }
 
     private func createContext(_ psc: NSPersistentStoreCoordinator) {
@@ -86,6 +115,24 @@ internal final class CacheMetadata {
         ctx.retainsRegisteredObjects = false
         ctx.shouldDeleteInaccessibleFaults = true
         self.ctx = ctx
+    }
+
+    private func mergeChangesFromSaveNotification(_ notif: Notification) {
+        guard let saved = notif.object as? NSManagedObjectContext else {
+            return
+        }
+        guard let context = self.ctx else {
+            return
+        }
+        guard context != saved else {
+            return
+        }
+        guard context.persistentStoreCoordinator == saved.persistentStoreCoordinator else {
+            return
+        }
+        context.performAndWait {
+            context.mergeChanges(fromContextDidSave: notif)
+        }
     }
 }
 

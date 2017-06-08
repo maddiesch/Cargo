@@ -27,7 +27,7 @@ final class CacheFileMover : FileMover {
     }
 
     func moveFile(atLocation url: URL, toTargetLocation target: URL, fileName: String) throws {
-        try Cache.shared.prepare()
+        try Cache.shared.prepareIfNeeded()
         try Cache.shared.move(fileAtLocation: url, intoCacheForKey: self.cacheKey, withName: fileName)
     }
 }

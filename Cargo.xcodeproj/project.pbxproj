@@ -12,14 +12,16 @@
 		94302BCB1EBB8F3800121B8E /* CachedFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94302BCA1EBB8F3800121B8E /* CachedFile.swift */; };
 		94302BEB1EBB912C00121B8E /* CacheMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94302BEA1EBB912C00121B8E /* CacheMetadata.swift */; };
 		94302C2C1EBBD40400121B8E /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94302C2B1EBBD40400121B8E /* URL.swift */; };
+		9496CC531EE9EA49000D5BBA /* CacheCleanupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9496CC521EE9EA49000D5BBA /* CacheCleanupOperation.swift */; };
+		9496CC551EE9F5D4000D5BBA /* CacheBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9496CC541EE9F5D4000D5BBA /* CacheBrowserViewController.swift */; };
+		9496CC571EE9FEDE000D5BBA /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9496CC561EE9FEDE000D5BBA /* Logger.swift */; };
 		94B633651EB0019A008AABBA /* Cargo.h in Headers */ = {isa = PBXBuildFile; fileRef = 94B633631EB0019A008AABBA /* Cargo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		94B6336D1EB001C4008AABBA /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B6336C1EB001C4008AABBA /* Container.swift */; };
 		94B6336F1EB001FF008AABBA /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B6336E1EB001FF008AABBA /* Manager.swift */; };
 		94B633721EB00397008AABBA /* DownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B633711EB00397008AABBA /* DownloadOperation.swift */; };
 		94B633741EB003C7008AABBA /* BaseOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B633731EB003C7008AABBA /* BaseOperation.swift */; };
-		94B633761EB003EC008AABBA /* MultiDownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B633751EB003EC008AABBA /* MultiDownloadOperation.swift */; };
 		94B633851EB004BC008AABBA /* ApplicationCallbackOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B633841EB004BC008AABBA /* ApplicationCallbackOperation.swift */; };
-		94B633871EB004D2008AABBA /* FileCleanupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B633861EB004D2008AABBA /* FileCleanupOperation.swift */; };
+		94B633871EB004D2008AABBA /* FileMoveOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B633861EB004D2008AABBA /* FileMoveOperation.swift */; };
 		94B6338F1EB00541008AABBA /* CargoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 94B6338E1EB00541008AABBA /* CargoTests.m */; };
 		94B633911EB00541008AABBA /* Cargo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94B633601EB0019A008AABBA /* Cargo.framework */; };
 		94B633991EB00757008AABBA /* Mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B633981EB00757008AABBA /* Mutex.swift */; };
@@ -55,6 +57,9 @@
 		94302BCA1EBB8F3800121B8E /* CachedFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachedFile.swift; sourceTree = "<group>"; };
 		94302BEA1EBB912C00121B8E /* CacheMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheMetadata.swift; sourceTree = "<group>"; };
 		94302C2B1EBBD40400121B8E /* URL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
+		9496CC521EE9EA49000D5BBA /* CacheCleanupOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheCleanupOperation.swift; sourceTree = "<group>"; };
+		9496CC541EE9F5D4000D5BBA /* CacheBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheBrowserViewController.swift; sourceTree = "<group>"; };
+		9496CC561EE9FEDE000D5BBA /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		94B633601EB0019A008AABBA /* Cargo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Cargo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94B633631EB0019A008AABBA /* Cargo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cargo.h; sourceTree = "<group>"; };
 		94B633641EB0019A008AABBA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -62,9 +67,8 @@
 		94B6336E1EB001FF008AABBA /* Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
 		94B633711EB00397008AABBA /* DownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadOperation.swift; sourceTree = "<group>"; };
 		94B633731EB003C7008AABBA /* BaseOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseOperation.swift; sourceTree = "<group>"; };
-		94B633751EB003EC008AABBA /* MultiDownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiDownloadOperation.swift; sourceTree = "<group>"; };
 		94B633841EB004BC008AABBA /* ApplicationCallbackOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationCallbackOperation.swift; sourceTree = "<group>"; };
-		94B633861EB004D2008AABBA /* FileCleanupOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCleanupOperation.swift; sourceTree = "<group>"; };
+		94B633861EB004D2008AABBA /* FileMoveOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileMoveOperation.swift; sourceTree = "<group>"; };
 		94B6338C1EB00541008AABBA /* CargoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CargoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		94B6338E1EB00541008AABBA /* CargoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CargoTests.m; sourceTree = "<group>"; };
 		94B633901EB00541008AABBA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -164,9 +168,8 @@
 			children = (
 				94B633731EB003C7008AABBA /* BaseOperation.swift */,
 				94B633711EB00397008AABBA /* DownloadOperation.swift */,
-				94B633751EB003EC008AABBA /* MultiDownloadOperation.swift */,
 				94B633841EB004BC008AABBA /* ApplicationCallbackOperation.swift */,
-				94B633861EB004D2008AABBA /* FileCleanupOperation.swift */,
+				94B633861EB004D2008AABBA /* FileMoveOperation.swift */,
 			);
 			name = Operations;
 			sourceTree = "<group>";
@@ -194,6 +197,7 @@
 				94D4FD791EBA774700B3CE00 /* Digest.swift */,
 				94D4FD7C1EBA78A700B3CE00 /* String.swift */,
 				94302C2B1EBBD40400121B8E /* URL.swift */,
+				9496CC561EE9FEDE000D5BBA /* Logger.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -215,6 +219,8 @@
 				94D4FD831EBA7D7100B3CE00 /* CacheKey.swift */,
 				94302BCA1EBB8F3800121B8E /* CachedFile.swift */,
 				94302BEA1EBB912C00121B8E /* CacheMetadata.swift */,
+				9496CC521EE9EA49000D5BBA /* CacheCleanupOperation.swift */,
+				9496CC541EE9F5D4000D5BBA /* CacheBrowserViewController.swift */,
 			);
 			name = Cache;
 			sourceTree = "<group>";
@@ -383,12 +389,14 @@
 				94B633721EB00397008AABBA /* DownloadOperation.swift in Sources */,
 				94D4FD841EBA7D7100B3CE00 /* CacheKey.swift in Sources */,
 				94B633E41EB24BA3008AABBA /* Progress.swift in Sources */,
-				94B633871EB004D2008AABBA /* FileCleanupOperation.swift in Sources */,
+				94B633871EB004D2008AABBA /* FileMoveOperation.swift in Sources */,
 				94D4FD661EBA51F300B3CE00 /* AtomicCounter.swift in Sources */,
+				9496CC531EE9EA49000D5BBA /* CacheCleanupOperation.swift in Sources */,
 				94D4FD7D1EBA78A700B3CE00 /* String.swift in Sources */,
 				94D4FD641EBA4CCF00B3CE00 /* ObserverManager.swift in Sources */,
+				9496CC571EE9FEDE000D5BBA /* Logger.swift in Sources */,
+				9496CC551EE9F5D4000D5BBA /* CacheBrowserViewController.swift in Sources */,
 				94D4FD7A1EBA774700B3CE00 /* Digest.swift in Sources */,
-				94B633761EB003EC008AABBA /* MultiDownloadOperation.swift in Sources */,
 				94B633BF1EB1135D008AABBA /* RemoteFile.swift in Sources */,
 				94B633991EB00757008AABBA /* Mutex.swift in Sources */,
 			);

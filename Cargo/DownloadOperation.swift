@@ -31,6 +31,7 @@ internal final class DownloadOperation: BaseOperation {
 
     override func execute() {
         let task = DownloadOperation.session.downloadTask(with: self.url)
+        Log("Download > \(self.url.lastPathComponent)")
         if let delegator = DownloadOperation.session.delegate as? SessionDelegator {
             delegator.add(taskIdentifier: task.taskIdentifier, operation: self)
         }

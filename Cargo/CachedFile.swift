@@ -62,7 +62,7 @@ internal class CachedFile : NSManagedObject {
         let components = location.pathComponents.reversed()
         var parts: [String] = []
         for part in components {
-            if part != Cache.baseDirectory {
+            if part != BaseCacheDirectoryName {
                 parts.append(part)
             } else {
                 break
@@ -82,7 +82,7 @@ internal class CachedFile : NSManagedObject {
     override func didSave() {
         if self.isDeleted {
             if let path = self.value(forKey: "location") as? String {
-                Cache.shared.remove(fileWithPath: path)
+                try? Cache.shared.remove(fileWithPath: path)
             }
         }
         super.didSave()

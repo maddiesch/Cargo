@@ -10,7 +10,7 @@ import Foundation
 
 typealias Location = (URL, String)
 
-internal final class FileCleanupOperation: BaseOperation, OperationObserver {
+internal final class FileMoveOperation: BaseOperation, OperationObserver {
     let mutex = Mutex()
 
     init(_ location: URL) {
@@ -32,6 +32,7 @@ internal final class FileCleanupOperation: BaseOperation, OperationObserver {
                 try mover.moveFile(atLocation: url, toTargetLocation: self.location, fileName: name)
                 try? FileManager.default.removeItem(at: url)
             }
+            Log("File Moved \(location.lastPathComponent)")
             self.finish()
         } catch {
             self.finish(error)

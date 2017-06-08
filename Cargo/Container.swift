@@ -123,34 +123,28 @@ public final class Container: NSObject {
     }
 
     private func _schedule(_ queue: OperationQueue) throws {
-        let multi = MultiDownloadOperation()
-        multi.container = self
-
-        let cleanup = FileCleanupOperation(self.location)
-        cleanup.container = self
-
         let callback = ApplicationCallbackOperation(self)
         callback.container = self
         callback.block = self.completion
 
-        callback.addDependency(multi)
-        callback.addDependency(cleanup)
-        cleanup.addDependency(multi)
-
         self.files.forEach { file in
             let download = DownloadOperation(url: file.url, fileName: file.fileName, fileID: file.id)
             download.container = self
-            download.observers.addObserver(multi)
-            download.observers.addObserver(cleanup)
-            multi.addDependency(download)
-            queue.addOperation(download)
 
+            let move = FileMoveOperation(self.location)
+            move.container = self
+
+            download.observers.addObserver(move)
+
+            move.addDependency(download)
+            callback.addDependency(move)
+
+            queue.addOperation(move)
+            queue.addOperation(download)
             _totalDownloads += 1
         }
 
-        queue.addOperation(multi)
         queue.addOperation(callback)
-        queue.addOperation(cleanup)
     }
 
     // MARK: - Progress
