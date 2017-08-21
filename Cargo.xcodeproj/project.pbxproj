@@ -311,7 +311,7 @@
 				TargetAttributes = {
 					94B6335F1EB0019A008AABBA = {
 						CreatedOnToolsVersion = 8.3.2;
-						LastSwiftMigration = 0830;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 					94B6338B1EB00541008AABBA = {
@@ -321,6 +321,7 @@
 					};
 					94D4FD6D1EBA768300B3CE00 = {
 						CreatedOnToolsVersion = 8.3.2;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 				};
