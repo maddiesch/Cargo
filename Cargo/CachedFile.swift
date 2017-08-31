@@ -24,20 +24,22 @@ internal class CachedFile : NSManagedObject {
             CreateAttribute("fingerprint", .stringAttributeType),
             CreateAttribute("name", .stringAttributeType),
             CreateAttribute("cacheName", .stringAttributeType),
-            CreateAttribute("location", .stringAttributeType)
+            CreateAttribute("location", .stringAttributeType),
+            CreateAttribute("viewable", .booleanAttributeType, defaultValue: true)
         ]
         desc.uniquenessConstraints = [
             ["uuid"],
             ["cacheKey", "fileKey"]
         ]
         desc.compoundIndexes = [
-            ["cacheKey", "fileKey"]
+            ["cacheKey", "fileKey"],
+            ["viewable", "expiresAt"]
         ]
         return desc
     }
 
     @discardableResult
-    static func create(inContext context: NSManagedObjectContext, forFileAtLocation location: URL, withKey key: String, fileKey: String, fileName: String) throws -> CachedFile {
+    static func create(inContext context: NSManagedObjectContext, forFileAtLocation location: URL, withKey key: String, fileKey: String, fileName: String, isVisible: Bool) throws -> CachedFile {
         let file: CachedFile = NSEntityDescription.insertNewObject(forEntityName: "CachedFile", into: context) as! CachedFile
         let info = try FileManager.default.attributesOfItem(atPath: location.path)
         let digest = try Digest.sha256Fingerprint(fileURL: location)
@@ -54,6 +56,7 @@ internal class CachedFile : NSManagedObject {
         file.setValue(fingerprint, forKey: "fingerprint")
         file.setValue(location.lastPathComponent, forKey: "cacheName")
         file.setValue(path, forKey: "location")
+        file.setValue(isVisible, forKey: "viewable")
 
         return file
     }

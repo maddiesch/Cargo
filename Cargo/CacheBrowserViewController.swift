@@ -64,7 +64,10 @@ public final class CacheBrowserViewController : UITableViewController, NSFetched
     // MARK: - Fetch Controller
     lazy var fetchController: NSFetchedResultsController<CachedFile> = {
         let fetch = NSFetchRequest<CachedFile>(entityName: "CachedFile")
-        fetch.predicate = NSPredicate(value: true)
+        fetch.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            NSPredicate(format: "viewable = YES"),
+            NSPredicate(format: "expiresAt >= %@", Date() as CVarArg)
+            ])
         fetch.sortDescriptors = [
             NSSortDescriptor(key: "name", ascending: true),
             NSSortDescriptor(key: "cacheKey", ascending: true)

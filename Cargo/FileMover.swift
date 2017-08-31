@@ -21,13 +21,15 @@ final class BasicFileMover : FileMover {
 
 final class CacheFileMover : FileMover {
     public let cacheKey: String
+    public let isVisible: Bool
 
-    public init(cacheKey: String) {
+    public init(cacheKey: String, isVisible: Bool) {
         self.cacheKey = cacheKey
+        self.isVisible = isVisible
     }
 
     func moveFile(atLocation url: URL, toTargetLocation target: URL, fileName: String) throws {
         try Cache.shared.prepareIfNeeded()
-        try Cache.shared.move(fileAtLocation: url, intoCacheForKey: self.cacheKey, withName: fileName)
+        try Cache.shared.move(fileAtLocation: url, intoCacheForKey: self.cacheKey, withName: fileName, isVisible: self.isVisible)
     }
 }

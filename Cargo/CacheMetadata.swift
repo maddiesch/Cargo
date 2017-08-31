@@ -144,12 +144,13 @@ func CreateManagedObjectModel() -> NSManagedObjectModel {
     return model
 }
 
-func CreateAttribute(_ name: String, _ type: NSAttributeType, _ indexed: Bool = false, _ optional: Bool = true, allowExternal: Bool = false) -> NSAttributeDescription {
+func CreateAttribute(_ name: String, _ type: NSAttributeType, _ indexed: Bool = false, _ optional: Bool = true, allowExternal: Bool = false, defaultValue: Any? = nil) -> NSAttributeDescription {
     let desc = NSAttributeDescription()
     desc.name = name
     desc.attributeType = type
     desc.isIndexed = indexed
     desc.isOptional = optional
     desc.allowsExternalBinaryDataStorage = allowExternal
+    desc.defaultValue = defaultValue
     return desc
 }

@@ -17,6 +17,7 @@ struct CacheError : CustomNSError {
         case convertFailed
         case fingerprintFailed
         case fileNotFound
+        case invalidURL
     }
 
     let message: String

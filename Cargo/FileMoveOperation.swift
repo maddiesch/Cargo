@@ -24,7 +24,7 @@ internal final class FileMoveOperation: BaseOperation, OperationObserver {
     override func execute() {
         let locations = self.mutex.synchronized { self.locations }
         do {
-            let mover = self.fileMover()
+            let mover = try self.fileMover()
             if self.location.isFileURL {
                 try FileManager.default.createDirectory(at: self.location, withIntermediateDirectories: true, attributes: nil)
             }
@@ -39,11 +39,16 @@ internal final class FileMoveOperation: BaseOperation, OperationObserver {
         }
     }
 
-    func fileMover() -> FileMover {
+    func fileMover() throws -> FileMover {
         if self.location.isCargoCache {
-            let parts = self.location.path.components(separatedBy: "/").filter { $0.characters.count > 0 }
+            guard let components = URLComponents(url: self.location, resolvingAgainstBaseURL: false) else {
+                throw CacheError(.invalidURL, "The cargo cache URL seems to be invalid")
+            }
+            let parts = components.path.components(separatedBy: "/").filter { $0.characters.count > 0 }
+            let isVisible = components.queryItems?.first { $0.name == "isVisible" }?.value ?? "true"
+
             if let key = parts.first {
-                return CacheFileMover(cacheKey: key)
+                return CacheFileMover(cacheKey: key, isVisible: isVisible == "true")
             }
             assert(false, "Missing cache key.  Can't save file into cache without one")
         }

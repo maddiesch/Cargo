@@ -80,8 +80,8 @@ public final class Cache : NSObject, FileManagerDelegate {
     ///   - location: The current location of the file
     ///   - key: The key where the file should be cached
     ///   - name: The file name for the file
-    @objc(moveFileAtLocation:intoCacheForKey:withName:error:)
-    public func move(fileAtLocation location: URL, intoCacheForKey key: String, withName name: String) throws {
+    @objc(moveFileAtLocation:intoCacheForKey:withName:isVisible:error:)
+    public func move(fileAtLocation location: URL, intoCacheForKey key: String, withName name: String, isVisible: Bool) throws {
         let key = try CacheKey(rawKey: key)
         let cName = try CacheKey.normailize(name)
         let base = key.location(self.location)
@@ -91,7 +91,7 @@ public final class Cache : NSObject, FileManagerDelegate {
             try fm.moveItem(at: location, to: destination)
         }
         try self.metadata.perform { ctx in
-            try CachedFile.create(inContext: ctx, forFileAtLocation: destination, withKey: key.key, fileKey: cName, fileName: name)
+            try CachedFile.create(inContext: ctx, forFileAtLocation: destination, withKey: key.key, fileKey: cName, fileName: name, isVisible: isVisible)
             if ctx.hasChanges {
                 try ctx.save()
             }
