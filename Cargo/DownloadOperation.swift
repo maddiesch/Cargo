@@ -30,12 +30,18 @@ internal final class DownloadOperation: BaseOperation {
     }
 
     override func execute() {
-        let task = DownloadOperation.session.downloadTask(with: self.url)
-        Log("Download > \(self.url.lastPathComponent)")
-        if let delegator = DownloadOperation.session.delegate as? SessionDelegator {
-            delegator.add(taskIdentifier: task.taskIdentifier, operation: self)
+        if self.url.isFileURL {
+            Log("Local > \(self.url.lastPathComponent)")
+            self.location = self.url
+            self.finish()
+        } else {
+            let task = DownloadOperation.session.downloadTask(with: self.url)
+            Log("Download > \(self.url.lastPathComponent)")
+            if let delegator = DownloadOperation.session.delegate as? SessionDelegator {
+                delegator.add(taskIdentifier: task.taskIdentifier, operation: self)
+            }
+            task.resume()
         }
-        task.resume()
     }
 
     internal func finished(downloadingFileAtLocation location: URL) {
