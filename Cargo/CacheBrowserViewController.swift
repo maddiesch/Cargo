@@ -76,45 +76,127 @@ public final class CacheBrowserViewController : UITableViewController, NSFetched
         return NSFetchedResultsController(fetchRequest: fetch, managedObjectContext: self.context, sectionNameKeyPath: nil, cacheName: nil)
     }()
 
+    private var hiddenFileCount: (Int, Int) {
+        let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "CachedFile")
+        fetch.resultType = .dictionaryResultType
+        fetch.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            NSPredicate(format: "viewable = NO"),
+            NSPredicate(format: "expiresAt >= %@", Date() as CVarArg)
+            ])
+
+        do {
+            let count = NSExpressionDescription()
+            count.name = "total"
+            count.expression = NSExpression(forFunction: "count:", arguments: [NSExpression(forKeyPath: "cacheKey")])
+            count.expressionResultType = .integer64AttributeType
+
+            let size = NSExpressionDescription()
+            size.name = "bytes"
+            size.expression = NSExpression(forFunction: "sum:", arguments: [NSExpression(forKeyPath: "fileSize")])
+            size.expressionResultType = .integer64AttributeType
+
+            fetch.propertiesToFetch = [count, size]
+        }
+
+        guard let result = try? self.context.fetch(fetch) else {
+            return (0, 0)
+        }
+
+        guard let hash = result.first as? [String: Int] else {
+            return (0, 0)
+        }
+
+        let count = hash["total"] ?? 0
+        let size = hash["bytes"] ?? 0
+
+        return (count, size)
+    }
+
     public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         self.tableView.reloadData()
     }
 
     // MARK: - Table View
     public override func numberOfSections(in tableView: UITableView) -> Int {
-        return self.fetchController.sections?.count ?? 0
+        return 2
     }
 
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let sections = self.fetchController.sections else {
+        switch section {
+        case 0:
+            return self.fetchController.fetchedObjects?.count ?? 0
+        case 1:
+            return 1
+        default:
             return 0
         }
-        return sections[section].numberOfObjects
     }
 
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let file = self.fetchController.object(at: indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: FileCell.identifier, for: indexPath)
         cell.selectionStyle = .none
-        cell.textLabel?.text = file.value(forKey: "name") as? String
 
-        if let size = file.value(forKey: "fileSize") as? Int64 {
-            cell.detailTextLabel?.text = ByteCountFormatter.string(fromByteCount: size, countStyle: .file)
-        } else {
-            cell.detailTextLabel?.text = nil
+        switch indexPath.section {
+        case 0:
+            let file = (self.fetchController.fetchedObjects ?? [])[indexPath.row]
+            cell.textLabel?.text = file.value(forKey: "name") as? String
+            if let size = file.value(forKey: "fileSize") as? Int64 {
+                cell.detailTextLabel?.text = ByteCountFormatter.string(fromByteCount: size, countStyle: .file)
+            } else {
+                cell.detailTextLabel?.text = nil
+            }
+            return cell
+        case 1:
+            let (count, bytes) = self.hiddenFileCount
+            if count == 1 {
+                cell.textLabel?.text = NSLocalizedString("\(count) other miscellaneous file", comment: "")
+            } else {
+                cell.textLabel?.text = NSLocalizedString("\(count) other miscellaneous files", comment: "")
+            }
+            cell.detailTextLabel?.text = ByteCountFormatter.string(fromByteCount: Int64(bytes), countStyle: .file)
+            return cell
+        default:
+            return cell
         }
-
-        return cell
     }
 
     public override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let file = self.fetchController.object(at: indexPath)
-            self.context.delete(file)
-            if self.context.hasChanges {
-                try? self.context.save()
+            switch indexPath.section {
+            case 0:
+                self.deleteFileAtIndex(indexPath.row)
+            case 1:
+                self.deleteHiddenFiles()
+            default:
+                break
             }
             tableView.reloadData()
+        }
+    }
+
+    private func deleteHiddenFiles() {
+        do {
+            let fetch = NSFetchRequest<CachedFile>(entityName: "CachedFile")
+            fetch.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                NSPredicate(format: "viewable = NO")
+                ])
+            let results = try self.context.fetch(fetch)
+            for result in results {
+                self.context.delete(result)
+            }
+            if self.context.hasChanges {
+                try self.context.save()
+            }
+        } catch {
+            print(error)
+        }
+    }
+
+    private func deleteFileAtIndex(_ index: Int) {
+        let file = (self.fetchController.fetchedObjects ?? [])[index]
+        self.context.delete(file)
+        if self.context.hasChanges {
+            try? self.context.save()
         }
     }
 }
@@ -130,4 +212,3 @@ fileprivate class FileCell : UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
