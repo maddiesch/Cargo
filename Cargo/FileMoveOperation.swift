@@ -8,10 +8,13 @@
 
 import Foundation
 
-typealias Location = (URL, String)
+fileprivate struct Location {
+    let url: URL
+    let name: String
+}
 
 internal final class FileMoveOperation: BaseOperation, OperationObserver {
-    let mutex = Mutex()
+    private let mutex = Mutex()
 
     init(_ location: URL) {
         self.location = location
@@ -19,7 +22,7 @@ internal final class FileMoveOperation: BaseOperation, OperationObserver {
 
     let location: URL
 
-    var locations: [Location] = []
+    private var locations: [Location] = []
 
     override func execute() {
         let locations = self.mutex.synchronized { self.locations }
@@ -28,10 +31,11 @@ internal final class FileMoveOperation: BaseOperation, OperationObserver {
             if self.location.isFileURL {
                 try FileManager.default.createDirectory(at: self.location, withIntermediateDirectories: true, attributes: nil)
             }
-            try locations.forEach { url, name in
-                try mover.moveFile(atLocation: url, toTargetLocation: self.location, fileName: name)
-                assert(!FileManager.default.fileExists(atPath: url.path), "The original file must not exist after \(type(of: mover))")
-                Log("File Moved - \(name)")
+            assert(locations.count > 0)
+            try locations.forEach { location in
+                try mover.moveFile(atLocation: location.url, toTargetLocation: self.location, fileName: location.name)
+                assert(!FileManager.default.fileExists(atPath: location.url.path), "The original file must not exist after \(type(of: mover))")
+                Log("File Moved - \(location.name)")
             }
             self.finish()
         } catch {
@@ -58,8 +62,8 @@ internal final class FileMoveOperation: BaseOperation, OperationObserver {
     func operation(_ operation: BaseOperation, didCompleteWithError error: Error?) {
         if let dl = operation as? DownloadOperation {
             if let url = dl.location {
+                let loc = Location(url: url, name: dl.fileName)
                 self.mutex.synchronized {
-                    let loc: Location = (url, dl.fileName)
                     self.locations.append(loc)
                 }
             }
