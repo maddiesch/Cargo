@@ -92,10 +92,10 @@ internal class BaseOperation : Operation {
     }
 
     func finish(_ error: Error? = nil) {
-        self.state = .finished
         self.observers.allObservers().forEach {
             $0.operation(self, didCompleteWithError: error)
         }
+        self.state = .finished
         self.container?.addError(error)
         self.operation(completedWithError: error)
     }
