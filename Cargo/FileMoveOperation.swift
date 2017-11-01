@@ -48,7 +48,7 @@ internal final class FileMoveOperation: BaseOperation, OperationObserver {
             guard let components = URLComponents(url: self.location, resolvingAgainstBaseURL: false) else {
                 throw CacheError(.invalidURL, "The cargo cache URL seems to be invalid")
             }
-            let parts = components.path.components(separatedBy: "/").filter { $0.characters.count > 0 }
+            let parts = components.path.components(separatedBy: "/").filter { $0.count > 0 }
             let isVisible = components.queryItems?.first { $0.name == "isVisible" }?.value ?? "true"
 
             if let key = parts.first {
