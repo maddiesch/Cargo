@@ -118,7 +118,7 @@ public final class CacheBrowserViewController : UITableViewController, NSFetched
 
     // MARK: - Table View
     public override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -127,6 +127,9 @@ public final class CacheBrowserViewController : UITableViewController, NSFetched
             return self.fetchController.fetchedObjects?.count ?? 0
         case 1:
             return 1
+        case 2:
+            return 1
+
         default:
             return 0
         }
@@ -135,6 +138,7 @@ public final class CacheBrowserViewController : UITableViewController, NSFetched
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: FileCell.identifier, for: indexPath)
         cell.selectionStyle = .none
+        cell.textLabel?.textColor = .black
 
         switch indexPath.section {
         case 0:
@@ -155,6 +159,12 @@ public final class CacheBrowserViewController : UITableViewController, NSFetched
             }
             cell.detailTextLabel?.text = ByteCountFormatter.string(fromByteCount: Int64(bytes), countStyle: .file)
             return cell
+        case 2:
+            cell.textLabel?.text = NSLocalizedString("Delete All", comment: "Delete all PDFs from cache")
+            cell.selectionStyle = .default
+            cell.textLabel?.textColor = UIColor(red: 0.896, green: 0.264, blue: 0.282, alpha: 1.0)
+            cell.detailTextLabel?.text = nil
+            return cell
         default:
             return cell
         }
@@ -171,6 +181,33 @@ public final class CacheBrowserViewController : UITableViewController, NSFetched
                 break
             }
             tableView.reloadData()
+        }
+    }
+
+    public override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        switch indexPath.section {
+        case 2:
+            return false
+        default:
+            return true
+        }
+    }
+
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 2:
+            self.deleteAllFiles()
+        default:
+            break
+        }
+    }
+
+    public override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        switch indexPath.section {
+        case 2:
+            return indexPath
+        default:
+            return nil
         }
     }
 
@@ -198,6 +235,13 @@ public final class CacheBrowserViewController : UITableViewController, NSFetched
         if self.context.hasChanges {
             try? self.context.save()
         }
+    }
+
+    private func deleteAllFiles() {
+        for file in self.fetchController.fetchedObjects ?? [] {
+            self.context.delete(file)
+        }
+        self.deleteHiddenFiles()
     }
 }
 
