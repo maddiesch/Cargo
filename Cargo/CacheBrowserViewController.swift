@@ -170,7 +170,7 @@ public final class CacheBrowserViewController : UITableViewController, NSFetched
         }
     }
 
-    public override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    public override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             switch indexPath.section {
             case 0:
@@ -248,7 +248,7 @@ public final class CacheBrowserViewController : UITableViewController, NSFetched
 fileprivate class FileCell : UITableViewCell {
     static let identifier = "fileCell"
 
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
     }
 

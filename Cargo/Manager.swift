@@ -44,14 +44,14 @@ public final class Manager: NSObject {
     /// Add an observer object
     ///
     /// - Parameter obs: The observer to add. Will be stored weakly
-    public func addObserver(_ obs: Observer) {
+    @objc public func addObserver(_ obs: Observer) {
         self.manager.addObserver(obs)
     }
 
     /// The observer to remove
     ///
     /// - Parameter obs: Observer to remove
-    public func removeObserver(_ obs: Observer) {
+    @objc public func removeObserver(_ obs: Observer) {
         self.manager.removeObserver(obs)
     }
 
