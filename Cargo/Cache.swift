@@ -48,7 +48,7 @@ public final class Cache : NSObject, FileManagerDelegate {
     }
     private var _isPrepared: Bool = false
 
-    public func prepareIfNeeded() throws {
+    @objc public func prepareIfNeeded() throws {
         try self.prepareQueue.sync {
             if !self._isPrepared {
                 try self.prepare()

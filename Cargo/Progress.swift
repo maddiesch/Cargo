@@ -17,7 +17,7 @@ public final class Progress : NSObject {
     public let fileName: String
     public let fileID: Int64
 
-    public let progress: Float
+    @objc public let progress: Float
 
     init(_ written: Int64, _ totalWritten: Int64, _ expected: Int64, _ name: String, _ fileID: Int64) {
         self.bytesWritten = written

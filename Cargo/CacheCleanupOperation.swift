@@ -12,25 +12,25 @@ import CoreData
 
 @objc(CARCacheCleanupOperation)
 public class CacheCleanupOperation : Operation {
-    private var taskIdentifier: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
+    private var taskIdentifier: UIBackgroundTaskIdentifier = UIBackgroundTaskIdentifier.invalid
 
     public override init() {
         super.init()
 
         self.taskIdentifier = UIApplication.shared.beginBackgroundTask(withName: "com.skylarsch.cargo-cleanup", expirationHandler: { [weak self] in
-            self?.taskIdentifier = UIBackgroundTaskInvalid
+            self?.taskIdentifier = UIBackgroundTaskIdentifier.invalid
         })
     }
     
     public override func main() {
-        if self.taskIdentifier == UIBackgroundTaskInvalid {
+        if self.taskIdentifier == UIBackgroundTaskIdentifier.invalid {
             return
         }
         defer {
-            if self.taskIdentifier != UIBackgroundTaskInvalid {
-                UIApplication.shared.endBackgroundTask(self.taskIdentifier)
+            if self.taskIdentifier != UIBackgroundTaskIdentifier.invalid {
+                UIApplication.shared.endBackgroundTask(convertToUIBackgroundTaskIdentifier(self.taskIdentifier.rawValue))
             }
-            self.taskIdentifier = UIBackgroundTaskInvalid
+            self.taskIdentifier = UIBackgroundTaskIdentifier.invalid
         }
 
         do {
@@ -58,4 +58,9 @@ public class CacheCleanupOperation : Operation {
             Log("Cache cleanup. Removed \(results.count) files")
         }
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIBackgroundTaskIdentifier(_ input: Int) -> UIBackgroundTaskIdentifier {
+	return UIBackgroundTaskIdentifier(rawValue: input)
 }
