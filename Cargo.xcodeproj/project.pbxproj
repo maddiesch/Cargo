@@ -250,9 +250,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 94B633681EB0019A008AABBA /* Build configuration list for PBXNativeTarget "Cargo" */;
 			buildPhases = (
+				94B6335D1EB0019A008AABBA /* Headers */,
 				94B6335B1EB0019A008AABBA /* Sources */,
 				94B6335C1EB0019A008AABBA /* Frameworks */,
-				94B6335D1EB0019A008AABBA /* Headers */,
 				94B6335E1EB0019A008AABBA /* Resources */,
 			);
 			buildRules = (
@@ -331,6 +331,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 94B633561EB0019A008AABBA;
